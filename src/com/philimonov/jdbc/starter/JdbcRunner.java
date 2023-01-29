@@ -12,9 +12,7 @@ public class JdbcRunner {
     public static void main(String[] args) throws SQLException{
         Class<Driver> driverClass = Driver.class;
         String firstRequest = """
-                    create table if not exists info(
-                    id serial primary key,
-                    data text not null)""";
+                    drop table info""";
         try (Connection connection = ConnectionManager.open();
              Statement statement = connection.createStatement()) {
             System.out.println(statement.execute(firstRequest));
