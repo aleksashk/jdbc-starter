@@ -13,7 +13,10 @@ public class JdbcRunner {
         Class<Driver> driverClass = Driver.class;
         String firstRequest = """
                    insert into info(data) values ('Test1'),
-                   ('Test2'), ('Test3'), ('Test4')""";
+                   ('Test2'), ('Test3'), ('Test4');insert into info(data) values ('Test11'),
+                   ('Test22'), ('Test33'), ('Test44');insert into info(data) values ('Test111'),
+                   ('Test222'), ('Test333'), ('Test444');
+                   """;
         try (Connection connection = ConnectionManager.open();
              Statement statement = connection.createStatement()) {
             System.out.println(statement.execute(firstRequest));
