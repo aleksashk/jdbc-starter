@@ -12,10 +12,13 @@ public class JdbcRunner {
     public static void main(String[] args) throws SQLException{
         Class<Driver> driverClass = Driver.class;
         String firstRequest = """
-                    drop schema game""";
+                    create table if not exists info(
+                    id serial primary key,
+                    data text not null)""";
         try (Connection connection = ConnectionManager.open();
              Statement statement = connection.createStatement()) {
             System.out.println(statement.execute(firstRequest));
+            System.out.println(connection.getSchema());
             System.out.println("****************");
             String sql = "select * from flight";
             ResultSet resultSet = statement.executeQuery(sql);
