@@ -11,11 +11,13 @@ import java.sql.Statement;
 public class JdbcRunner {
     public static void main(String[] args) throws SQLException{
         Class<Driver> driverClass = Driver.class;
-        try (Connection connection = ConnectionManager.open()) {
-
+        String firstRequest = """
+                    create database game""";
+        try (Connection connection = ConnectionManager.open();
+             Statement statement = connection.createStatement()) {
+            System.out.println(statement.execute(firstRequest));
+            System.out.println("****************");
             String sql = "select * from flight";
-
-            Statement statement = connection.createStatement();
             ResultSet resultSet = statement.executeQuery(sql);
 
             while (resultSet.next()){
