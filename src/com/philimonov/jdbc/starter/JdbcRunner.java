@@ -12,7 +12,7 @@ public class JdbcRunner {
     public static void main(String[] args) throws SQLException{
         Class<Driver> driverClass = Driver.class;
         String firstRequest = """
-                    create schema game""";
+                    drop schema game""";
         try (Connection connection = ConnectionManager.open();
              Statement statement = connection.createStatement()) {
             System.out.println(statement.execute(firstRequest));
