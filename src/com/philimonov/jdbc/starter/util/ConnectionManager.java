@@ -10,6 +10,18 @@ public class ConnectionManager {
     private static final String USERNAME = "postgres";
     private static final String PASSWORD = "password";
 
+    static {
+        loadDriver();
+    }
+
+    private static void loadDriver() {
+        try {
+            Class.forName("org.postgresql.Driver");
+        } catch (ClassNotFoundException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
     private ConnectionManager(){
 
     }
