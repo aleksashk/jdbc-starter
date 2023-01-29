@@ -18,6 +18,7 @@ public class JdbcRunner {
              Statement statement = connection.createStatement()) {
             System.out.println(statement.execute(firstRequest));
             System.out.println(connection.getSchema());
+            System.out.println(statement.getUpdateCount());
             System.out.println("****************");
             String sql = "select * from flight";
             ResultSet resultSet = statement.executeQuery(sql);
