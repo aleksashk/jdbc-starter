@@ -3,6 +3,7 @@ package com.philimonov.jdbc.starter;
 import com.philimonov.jdbc.starter.util.ConnectionManager;
 
 import java.sql.Connection;
+import java.sql.DatabaseMetaData;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -14,13 +15,36 @@ import java.util.List;
 
 public class JdbcRunner {
     public static void main(String[] args) throws SQLException {
-        List<Long> flightsBetween = getFlightsBetween(LocalDate.of(2020, 1, 1).atStartOfDay(), LocalDateTime.now());
-        System.out.println(flightsBetween);
-        System.out.println("----------------------------------");
+//        List<Long> flightsBetween = getFlightsBetween(LocalDate.of(2020, 1, 1).atStartOfDay(), LocalDateTime.now());
+//        System.out.println(flightsBetween);
+//        System.out.println("----------------------------------");
+//
+//        Long flightId = 3L;
+//        List<Long> result = getTicketsByFlightId(flightId);
+//        System.out.println(result);
 
-        Long flightId = 3L;
-        List<Long> result = getTicketsByFlightId(flightId);
-        System.out.println(result);
+        checkMetaData();
+    }
+
+    private static void checkMetaData() throws SQLException{
+        try(Connection connection = ConnectionManager.open()){
+            DatabaseMetaData metaData = connection.getMetaData();
+            ResultSet catalogs = metaData.getCatalogs();
+            while (catalogs.next()){
+                System.out.println(catalogs.getString(1));
+
+                ResultSet schemas = metaData.getSchemas();
+                while (schemas.next()){
+                    System.out.println(schemas.getString("TABLE_SCHEM"));
+                    ResultSet tables = metaData.getTables(null, null, "%", null);
+                    while (tables.next()){
+                        System.out.println(tables.getString("TABLE_NAME"));
+
+
+                    }
+                }
+            }
+        }
     }
 
     private static List<Long> getFlightsBetween(LocalDateTime start, LocalDateTime end) {
