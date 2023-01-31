@@ -5,7 +5,6 @@ import com.philimonov.jdbc.starter.util.ConnectionManager;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
-import java.sql.Blob;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
@@ -25,12 +24,9 @@ public class BlobRunner {
                 """;
         try (Connection connection = ConnectionManager.open();
              PreparedStatement preparedStatement = connection.prepareStatement(sql)) {
-            connection.setAutoCommit(false);
-            Blob blob = connection.createBlob();
-            blob.setBytes(1, Files.readAllBytes(Path.of("resources", "Emirates-B777.jpg")));
-            preparedStatement.setBlob(1, blob);
+
+            preparedStatement.setBytes(1, Files.readAllBytes(Path.of("resources", "Emirates-B777.jpg")));
             preparedStatement.executeUpdate();
-            connection.commit();
         }
     }
 }
