@@ -4,19 +4,24 @@ import com.philimonov.jdbc.starter.util.ConnectionManager;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
+import java.sql.SQLException;
 
 public class TransactionRunner {
-    public static void main(String[] args) {
-        long flightId = 9;
+    public static void main(String[] args) throws SQLException {
+        long flightId = 8;
         String deleteFlightSql = """
                 delete from flight where id = ?;
                 """;
         String deleteTicketsSql = """
                 delete from ticket where flight_id = ?;
                 """;
-        try (Connection connection = ConnectionManager.open();
-             PreparedStatement deleteFlightStatement = connection.prepareStatement(deleteFlightSql);
-             PreparedStatement deleteTicketsStatement = connection.prepareStatement(deleteTicketsSql)) {
+        Connection connection = null;
+        PreparedStatement deleteFlightStatement = null;
+        PreparedStatement deleteTicketsStatement = null;
+        try {
+            connection = ConnectionManager.open();
+            deleteFlightStatement = connection.prepareStatement(deleteFlightSql);
+            deleteTicketsStatement = connection.prepareStatement(deleteTicketsSql);
             connection.setAutoCommit(false);
             deleteFlightStatement.setLong(1, flightId);
             deleteTicketsStatement.setLong(1, flightId);
@@ -27,7 +32,20 @@ public class TransactionRunner {
             deleteFlightStatement.executeUpdate();
             connection.commit();
         } catch (Exception e) {
-            throw new RuntimeException(e);
+            if (connection != null) {
+                connection.rollback();
+            }
+            throw e;
+        } finally {
+            if (connection != null) {
+                connection.close();
+            }
+            if (deleteTicketsStatement != null) {
+                deleteTicketsStatement.close();
+            }
+            if (deleteFlightStatement != null) {
+                deleteFlightStatement.close();
+            }
         }
     }
 }
