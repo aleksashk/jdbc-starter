@@ -9,18 +9,19 @@ public class TransactionRunner {
     public static void main(String[] args) {
         long flightId = 9;
         String deleteFlightSql = """
-                    delete from flight where id = ?;
-                    """;
+                delete from flight where id = ?;
+                """;
         String deleteTicketsSql = """
-                    delete from ticket where flight_id = ?;
-                    """;
+                delete from ticket where flight_id = ?;
+                """;
         try (Connection connection = ConnectionManager.open();
              PreparedStatement deleteFlightStatement = connection.prepareStatement(deleteFlightSql);
-             PreparedStatement deleteTicketsStatement = connection.prepareStatement(deleteTicketsSql)){
+             PreparedStatement deleteTicketsStatement = connection.prepareStatement(deleteTicketsSql)) {
+            connection.setAutoCommit(false);
             deleteFlightStatement.setLong(1, flightId);
             deleteTicketsStatement.setLong(1, flightId);
             deleteTicketsStatement.executeUpdate();
-            if(true){
+            if (true) {
                 throw new RuntimeException("Something wrong!!");
             }
             deleteFlightStatement.executeUpdate();
