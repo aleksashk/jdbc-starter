@@ -24,6 +24,8 @@ public class JdbcRunner {
 //        System.out.println(result);
 
         checkMetaData();
+
+
     }
 
     private static void checkMetaData() throws SQLException{
