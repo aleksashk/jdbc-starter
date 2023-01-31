@@ -25,6 +25,7 @@ public class TransactionRunner {
                 throw new RuntimeException("Something wrong!!");
             }
             deleteFlightStatement.executeUpdate();
+            connection.commit();
         } catch (Exception e) {
             throw new RuntimeException(e);
         }
