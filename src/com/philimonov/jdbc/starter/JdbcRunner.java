@@ -8,7 +8,6 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Timestamp;
-import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
@@ -23,25 +22,27 @@ public class JdbcRunner {
 //        List<Long> result = getTicketsByFlightId(flightId);
 //        System.out.println(result);
 
-        checkMetaData();
-
+        try {
+            checkMetaData();
+        } finally {
+            ConnectionManager.closePool();
+        }
 
     }
 
-    private static void checkMetaData() throws SQLException{
-        try(Connection connection = ConnectionManager.open()){
+    private static void checkMetaData() throws SQLException {
+        try (Connection connection = ConnectionManager.get()) {
             DatabaseMetaData metaData = connection.getMetaData();
             ResultSet catalogs = metaData.getCatalogs();
-            while (catalogs.next()){
+            while (catalogs.next()) {
                 System.out.println(catalogs.getString(1));
 
                 ResultSet schemas = metaData.getSchemas();
-                while (schemas.next()){
+                while (schemas.next()) {
                     System.out.println(schemas.getString("TABLE_SCHEM"));
                     ResultSet tables = metaData.getTables(null, null, "%", null);
-                    while (tables.next()){
+                    while (tables.next()) {
                         System.out.println(tables.getString("TABLE_NAME"));
-
 
                     }
                 }
@@ -54,7 +55,7 @@ public class JdbcRunner {
                 select id from flight where departure_date between ? and ?
                 """;
         List<Long> result = new ArrayList<>();
-        try (Connection connection = ConnectionManager.open();
+        try (Connection connection = ConnectionManager.get();
              PreparedStatement preparedStatement = connection.prepareStatement(sql)) {
             System.out.println(preparedStatement);
             preparedStatement.setTimestamp(1, Timestamp.valueOf(start));
@@ -77,7 +78,7 @@ public class JdbcRunner {
                 select * from ticket where flight_id = ?
                 """;
         List<Long> result = new ArrayList<>();
-        try (Connection connection = ConnectionManager.open();
+        try (Connection connection = ConnectionManager.get();
              PreparedStatement preparedStatement = connection.prepareStatement(sql)) {
             preparedStatement.setLong(1, flightId);
             ResultSet resultSet = preparedStatement.executeQuery();
