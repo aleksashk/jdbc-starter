@@ -1,5 +1,6 @@
 package com.philimonov.jdbc.starter.dao;
 
+import com.philimonov.jdbc.starter.dto.TicketFilter;
 import com.philimonov.jdbc.starter.entity.Ticket;
 import com.philimonov.jdbc.starter.exception.DaoException;
 import com.philimonov.jdbc.starter.util.ConnectionManager;
@@ -52,6 +53,30 @@ public class TicketDao {
 
     public static TicketDao getINSTANCE() {
         return INSTANCE;
+    }
+
+    public List<Ticket> findAll(TicketFilter filter) {
+        List<Object> parameters = new ArrayList<>();
+        parameters.add(filter.limit());
+        parameters.add(filter.offset());
+        String sql = FIND_ALL_SQL + """
+                limit ?
+                offset ?
+                """;
+        try (Connection connection = ConnectionManager.get();
+             PreparedStatement preparedStatement = connection.prepareStatement(sql)) {
+            for (int i = 0; i < parameters.size(); i++) {
+                preparedStatement.setObject(i + 1, parameters.get(i));
+            }
+            ResultSet resultSet = preparedStatement.executeQuery();
+            List<Ticket> tickets = new ArrayList<>();
+            while (resultSet.next()) {
+                tickets.add(buildTicket(resultSet));
+            }
+            return tickets;
+        } catch (Exception e) {
+            throw new DaoException(e);
+        }
     }
 
     public List<Ticket> findAll() {

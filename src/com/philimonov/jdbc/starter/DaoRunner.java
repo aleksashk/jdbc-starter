@@ -1,6 +1,7 @@
 package com.philimonov.jdbc.starter;
 
 import com.philimonov.jdbc.starter.dao.TicketDao;
+import com.philimonov.jdbc.starter.dto.TicketFilter;
 import com.philimonov.jdbc.starter.entity.Ticket;
 
 import java.math.BigDecimal;
@@ -9,8 +10,12 @@ import java.util.Optional;
 
 public class DaoRunner {
     public static void main(String[] args) {
-        List<Ticket> tickets = TicketDao.getINSTANCE().findAll();
+        TicketFilter ticketFilter = new TicketFilter(3, 2);
+        List<Ticket> tickets = TicketDao.getINSTANCE().findAll(ticketFilter);
         System.out.println(tickets);
+
+//        List<Ticket> tickets = TicketDao.getINSTANCE().findAll();
+//        System.out.println(tickets);
 //        updateTest();
 //        saveTest();
 //        TicketDao ticketDao = TicketDao.getINSTANCE();
@@ -22,7 +27,7 @@ public class DaoRunner {
         TicketDao ticketDao = TicketDao.getINSTANCE();
         Optional<Ticket> maybeTicket = ticketDao.findById(2L);
         System.out.println(maybeTicket);
-        maybeTicket.ifPresent(ticket->{
+        maybeTicket.ifPresent(ticket -> {
             ticket.setCost(BigDecimal.valueOf(188.88));
             ticketDao.update(ticket);
         });
