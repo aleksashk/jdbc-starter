@@ -7,6 +7,13 @@ import java.math.BigDecimal;
 
 public class DaoRunner {
     public static void main(String[] args) {
+//        saveTest();
+        TicketDao ticketDao = TicketDao.getINSTANCE();
+        boolean deleteResult = ticketDao.delete(58L);
+        System.out.println(deleteResult);
+    }
+
+    private static void saveTest() {
         TicketDao ticketDao = TicketDao.getINSTANCE();
         Ticket ticket = new Ticket();
         ticket.setPassengerNo("1234567");
